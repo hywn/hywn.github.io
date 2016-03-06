@@ -2,21 +2,17 @@
 <html>
 <body>
 
-<canvas id="myCanvas" style="border:1px solid #d3d3d3;">
+<canvas id="myCanvas">
 Your browser does not support the HTML5 canvas tag.</canvas>
-
-<style>
-#myCanvas {
-width: 100%;
-height: 100%
-}
-</style>
 
 <script>
 var c = document.getElementById("myCanvas");
+c.width = window.innerWidth;
+c.height = window.innerHeight;
+
 var ctx = c.getContext("2d");
 ctx.font = "30px Arial";
-ctx.fillText("Hello World",10,50);
+ctx.fillText("riperoni",10,50);
 
 c.addEventListener('click', function(element){
 
