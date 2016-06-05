@@ -1,0 +1,26 @@
+<head>
+<script type="text/javascript" src="http://resources.guild-hosting.net/201604151307/themes/core/js/modules/shoutbox.js"></script>
+<script type="text/javascript" defer="defer">
+    //<!--
+    $(document).ready(function() {
+	var options = {
+		shouts: [{"shout_id":"20393752"},
+		is_admin: false,
+		can_post: true,
+		total_pages: 15,
+		items_page: 15,
+		last_id: 20393752,
+		disable_time: 6000	};
+	
+	new Module_Shoutbox(33584558, options);
+});
+
+</script>
+</head>
+
+<div class="form_post">
+	<div class="input-text item item-msg">
+		<input id="message" name="message" type="text">
+	</div>
+	<input type="button" onclick="Module_Shoutbox.getInstance('33584558').submit(this);"></input>
+</div>
