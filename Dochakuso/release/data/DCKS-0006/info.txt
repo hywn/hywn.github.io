@@ -1,0 +1,5 @@
+id=DCKS-0006
+title=わかる
+artists=V.A.
+download=https://www.mediafire.com/?018wohd043wxifb
+splash=わかる

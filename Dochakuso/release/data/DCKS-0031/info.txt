@@ -1,0 +1,5 @@
+id=DCKS-0031
+title=Songs of Dying Girls
+artists=WACKO YASUNA
+download=http://www.mediafire.com/download/nxd0rob43fupscn/
+splash=「好きよ、あなたが。殺したいほど」

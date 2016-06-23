@@ -1,0 +1,4 @@
+id=DCKSC-0003
+title=We Are Dochakuso 3
+artists=V.A.
+splash=DOCHAKUSOしようや

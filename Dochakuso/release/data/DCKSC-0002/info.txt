@@ -1,0 +1,4 @@
+id=DCKSC-0002
+title=We Are Dochakuso 2
+artists=V.A.
+splash=CDで2作目とかな

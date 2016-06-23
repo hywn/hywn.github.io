@@ -1,0 +1,5 @@
+id=DCKS-0010
+title=UTADA
+artists=pencil
+download=https://www.mediafire.com/?8fmc98l3t1xsbll
+splash=宇多田ヒカルは最高

@@ -1,0 +1,5 @@
+id=DCKS-0024
+title=Fictional Story EP
+artists=floppie
+download=http://www.mediafire.com/download/40lny8luy22tbxb/
+splash=J-Core Never Die

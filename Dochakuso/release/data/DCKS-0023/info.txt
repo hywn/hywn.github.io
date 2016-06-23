@@ -1,0 +1,5 @@
+id=DCKS-0023
+title=sadness EP
+artists=lililL
+download=http://www.mediafire.com/download/belzb5dmjafeg38/
+splash=休日で起きたら夜をやらかすと一日無駄にした感があって悲しい

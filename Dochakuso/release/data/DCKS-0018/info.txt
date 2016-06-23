@@ -1,0 +1,5 @@
+id=DCKS-0018
+title=初音ミクさん誕生日おめでとうございました
+artists=pencil & Takeshita
+download=http://www.mediafire.com/download/6u7b55nkns732ww/
+splash=生きています

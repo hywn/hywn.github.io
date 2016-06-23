@@ -1,0 +1,5 @@
+id=DCKS-0008
+title=One Of Us
+artists=Frontcore
+download=http://www.mediafire.com/download/2cfkm3lbge30qpf/
+splash=ウクライナより愛を込めて

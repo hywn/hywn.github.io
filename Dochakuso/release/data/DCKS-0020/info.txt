@@ -1,0 +1,5 @@
+id=DCKS-0020
+title=Σ3
+artists=V.A.
+download=http://www.mediafire.com/download/zbxcqagilo18x8n/
+splash=時代はΣ3

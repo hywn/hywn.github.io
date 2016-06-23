@@ -1,0 +1,5 @@
+id=DCKS-0034
+title=ごみDJツールズ
+artists=pencil × tobato × Burutti
+download=http://www.mediafire.com/download/awdt58y2mxa8t8y/
+splash=ごみはリサイクル、ごみでリサイタル、俺らはリバイバル

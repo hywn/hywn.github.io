@@ -1,0 +1,5 @@
+id=DCKS-0025
+title=Hachiko Line EP
+artists=Ryuroido
+download=http://www.mediafire.com/download/zus6vidbhe96pm2/
+splash=八高線 is ****

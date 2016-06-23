@@ -1,0 +1,18 @@
+//pencil
+Twitter=https://twitter.com/pencilest
+Soundcloud=https://soundcloud.com/penciler
+//DJ Negami
+Twitter=https://twitter.com/DJNegami
+Soundcloud=https://soundcloud.com/dj-negami
+//NJ zEn
+Twitter=https://twitter.com/NJ_zEn0327
+Soundcloud=https://soundcloud.com/nj-zen
+//Riumu
+Twitter=https://twitter.com/Riumu_
+Soundcloud=https://soundcloud.com/riumu
+//llks
+Twitter=https://twitter.com/llks1
+Soundcloud=https://soundcloud.com/llks1
+//TtenM
+Twitter=https://twitter.com/TtenM
+Soundcloud=https://soundcloud.com/ttenm

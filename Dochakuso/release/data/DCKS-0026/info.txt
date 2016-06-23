@@ -1,0 +1,5 @@
+id=DCKS-0026
+title=Internet Teknique
+artists=V.A.
+download=http://www.mediafire.com/download/chhak77cg1ck91g/
+splash=高尾山でHardtek

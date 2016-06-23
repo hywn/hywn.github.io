@@ -1,0 +1,5 @@
+id=DCKS-0021
+title=Harder Louder EP
+artists=lililL
+download=http://www.mediafire.com/download/vugbii31z32is5y/
+splash=俺はハードコアだ、道を空け

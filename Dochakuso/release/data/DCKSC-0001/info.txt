@@ -1,0 +1,5 @@
+id=DCKSC-0001
+title=We Are Dochakuso
+artists=V.A.
+download=http://www.mediafire.com/download/c84v9fe4xqrziec/
+splash=CDとは

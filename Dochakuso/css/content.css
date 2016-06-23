@@ -1,0 +1,45 @@
+/* general */
+body { font-family: "Arial" }
+.content { width: 800; margin: auto; padding: 10px }
+a { color: #44f  }
+a:visited { color: #44f }
+a:hover { color: #88f }
+
+/* header */
+#headertext { float: left; margin: 0px; font-size: 2em }
+#navigation { float: right; line-height: ; vertical-align: middle }
+#navigation a { text-decoration: none }
+.navlink { padding: 0px 5px 0px 5px }
+#header { width: 750px; border-bottom: 3px solid; padding: 10px; background-color: #eee;
+  overflow: auto; margin: auto; margin-top: 20px }
+
+/* footer */
+#footer { margin: auto; overflow: auto; width: 750; border-top: 3px solid;
+  margin-top: 20px; margin-bottom: 300px; color: #000; clear: both }
+#splash { float: right; padding: 0.2em; font-size: 0.9em }
+
+/* top page */
+.twitter-timeline { max-width: 400px !important; float: right }
+#newestrelease { width: 390px; float: left; border-right: 1px solid #ddd }
+#top-img { border-top: 5px solid; border-bottom: 5px solid; margin: 10px 0px 10px 0px }
+#top-content { overflow: auto }
+
+/* members */
+#members { table-layout: fixed; margin: auto }
+#members td { padding: 10px }
+.memberimg { height: 200px }
+
+/* releases page */
+#dlheader, #cdheader { margin-bottom: 0px; margin-top: 10px }
+#dllist, #cdlist { margin: 0px; list-style-type: none; padding: 0.2em 0px 0px 2em }
+li { padding: 0.2em }
+
+.listjacket { width: 400px }
+
+/* release page */
+#description { padding: 15px 0px 15px 0px}
+#download { font-size: 1.2em; padding: 10px }
+
+#tracklist { padding: 15px 0px 15px 0px }
+#tracklist-title { margin: 0px }
+#tracklist-list { list-style-type: none; margin: 0px }

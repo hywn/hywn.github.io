@@ -1,0 +1,5 @@
+id=DCKS-0013
+title=AD:1000
+artists=V.A.
+download=http://www.mediafire.com/download/cggh5y8xo2d59wf/
+splash=速さは強さ。ポン酢はヤマサ
