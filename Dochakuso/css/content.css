@@ -19,7 +19,7 @@ a:hover { color: #88f }
 #splash { float: right; padding: 0.2em; font-size: 0.9em }
 
 /* top page */
-.twitter-timeline { max-width: 400px !important; float: right }
+.twitter-timeline { max-width: 400px !important; float: right; height: 1000px !important }
 #newestrelease { width: 390px; float: left; border-right: 1px solid #ddd }
 #top-img { border-top: 5px solid; border-bottom: 5px solid; margin: 10px 0px 10px 0px }
 #top-content { overflow: auto }
