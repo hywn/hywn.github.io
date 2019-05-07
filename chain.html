@@ -29,7 +29,7 @@
 </head>
 <body>
 
-<div class="box"><textarea id="data"></textarea></div>
+<div class="box"><textarea placeholder="paste some text here" id="data"></textarea></div>
 <div class="box" id="geninfo">
 	<table>
 		<tr><td>text length</td><td><input id="len" type="text" value="12" placeholder="text length" /></td></tr>
@@ -37,14 +37,14 @@
 		<tr><td></td><td><input type="button" value="generate" onclick="gen();" /></td></tr>
 	</table>
 </div>
-<div class="box"><textarea id="output"></textarea></div>
+<div class="box"><textarea placeholder="chain-generated text will appear here" id="output"></textarea></div>
 </body>
 
 <script>
 	let url = new URL(window.location.href);
 	let srcurl = url.searchParams.get("source");
 	
-	fetch(srcurl).then((response) => response.text()).then(text => document.getElementById("data").value = text);
+	if (srcurl) fetch(srcurl).then((response) => response.text()).then(text => document.getElementById("data").value = text);
 
 	function gen() {
 		document.getElementById("output").value = generateText(document.getElementById("data").value,
