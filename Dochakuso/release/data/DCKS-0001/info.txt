@@ -1,5 +1,0 @@
-id=DCKS-0001
-title=小ネタEP
-artists=V.A.
-download=http://www.mediafire.com/?tmhhcs73sajdhux
-splash=欧風チーズカレー

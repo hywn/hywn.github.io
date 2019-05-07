@@ -1,5 +1,0 @@
-id=DCKS-0012
-title=REMIXED
-artists=YZOX
-download=http://www.mediafire.com/download/tikrni8ixupcfl4/
-splash=珠玉のリミックスセレクション

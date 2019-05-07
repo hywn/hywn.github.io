@@ -1,5 +1,0 @@
-id=DCKS-0016
-title=Testicle
-artists=ALTAF
-download=http://www.mediafire.com/download/vgillr5ebldtfrp/
-splash=闇属性ブレイクコア
