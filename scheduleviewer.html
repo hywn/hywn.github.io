@@ -5,6 +5,7 @@
 <div id="geninfo" class="box">
 	<textarea id="data"></textarea>
 	<table>
+		<tr><td></td><td><input type="button" value="generate" onclick="gen();" /></td></tr>
 		<tr><td>marginX</td><td><input id="marginX" type="text" value="50" /></td></tr>
 		<tr><td>marginY</td><td><input id="marginY" type="text" value="50" /></td></tr>
 		<tr><td>startHour</td><td><input id="startHour" type="text" value="8" /></td></tr>
@@ -15,9 +16,11 @@
 		<tr><td>foreground</td><td><input id="foreground" type="text" value="#000" /></td></tr>
 		<tr><td>background</td><td><input id="background" type="text" value="#fff" /></td></tr>
 		<tr><td>guideOpacity</td><td><input id="guideOpacity" type="text" value="0.1" /></td></tr>
+		<tr><td>line spacing</td><td><input id="lineHeight" type="text" value="14" /></td></tr>
+		<tr><td>text padding</td><td><input id="textPadding" type="text" value="4" /></td></tr>
 		<tr><td>day of week codes</td><td><input id="shortDays" type="text" value="mo,tu,we,th,fr" /></td></tr>
 		<tr><td>day of week display</td><td><input id="longDays" type="text" value="Mon,Tue,Wed,Thu,Fri" /></td></tr>
-		<tr><td></td><td><input type="button" value="generate" onclick="gen();" /></td></tr>
+		<tr><td><input type="button" value="import settings" onclick="importSettings();" /></td><td><input type="button" value="append/replace settings" onclick="appendSettings();" /></td></tr>
 	</table>
 </div>
 
@@ -50,6 +53,10 @@ var startHour = 8, endHour = 18;
 var blockWidth = 100, blockHeight = 60;
 var foreground, background;
 var guideOpacity;
+var lineHeight = 14;
+var textPadding = 5;
+
+var data = document.getElementById("data");
 
 var canvas, c;
 initCanvas();
@@ -64,6 +71,8 @@ function initCanvas() {
 	foreground = getText("foreground");
 	background = getText("background");
 	guideOpacity = parseFloat(getText("guideOpacity"));
+	lineHeight = getInt("lineHeight");
+	textPadding = getInt("textPadding");
 	shortDays = getText("shortDays").split(",");
 	longDays = getText("longDays").split(",");
 	
@@ -79,6 +88,7 @@ function initCanvas() {
 	c.textBaseline = "middle";
 
 	c.fillStyle = background;
+	document.getElementById("sbInner").style.backgroundColor = background;
 	c.fillRect(0, 0, canvas.width, canvas.height);
 	c.fillStyle = foreground;
 
@@ -93,6 +103,8 @@ let srcurl = url.searchParams.get("src");
 if (srcurl){
 	fetch(srcurl).then((response) => response.text()).then(text => {
 		document.getElementById("data").value = text;
+		importSettings(); // sets ui values from text
+		initCanvas(); // imports values from ui
 		drawSchedule(text);
 	});
 }
@@ -107,10 +119,15 @@ function drawSchedule(data) {
 }
 
 function drawDOW(string) { // 1st line: 2-char dows, 2nd line and beyond: see parseBlock
-	lines = string.split("\n");
+	let lines = string.split("\n");
 	for (day of lines[0].toLowerCase().split(/(?=(?:..)*$)/)) // splits mowefrtu into mo, we, fr, tu
 		for (block of lines.slice(1, lines.length).map(parseBlock)) // takes remaining lines and parses them into blocks
-			if (shortDays.indexOf(day) != -1) drawTextRect(block[0], marginX + shortDays.indexOf(day)*blockWidth, marginY + (block[1] - startHour)*blockHeight, blockWidth, (block[2] - block[1])*blockHeight);
+			if (shortDays.indexOf(day) != -1)
+				drawTextRect(block[0],
+				marginX + shortDays.indexOf(day)*blockWidth,
+				marginY + (block[1] - startHour)*blockHeight,
+				blockWidth,
+				(block[2] - block[1])*blockHeight);
 }
 
 /* parsing */
@@ -126,8 +143,8 @@ function parseHours(string, start, end) {
 
 /* UI graphics */
 
-function drawDOWLabels() {
-	for (i=0; i<longDays.length; i++) drawTextRect(longDays[i], marginX + i*blockWidth, 0, blockWidth, marginY );
+function drawDOWLabels() { // note: idk how var, let, noname works
+	for (day=0; day<longDays.length; day++) drawTextRect(longDays[day], marginX + day*blockWidth, 0, blockWidth, marginY );
 }
 
 function drawTimes() { // (num, num, num, num, num)
@@ -135,12 +152,38 @@ function drawTimes() { // (num, num, num, num, num)
 		drawTextRect(hour + "", 0, marginY + (hour - startHour)*blockHeight, marginX, blockHeight);
 }
 
-function drawLines(blockWidth){
+function drawLines(){
 	for (hour=startHour+1; hour<=endHour; hour++) {
 		c.globalAlpha = guideOpacity;
 		c.strokeRect(marginX, marginY + (hour - startHour)*blockHeight, canvas.width - marginY, 0);
 		c.globalAlpha = 1;
 	}
+}
+
+function importSettings() {
+	for (element of document.getElementById("geninfo").querySelectorAll("input[type=text]"))
+		if ((settingValue = getSetting(element.id)) != null)
+			element.value = settingValue;
+}
+
+function appendSettings() {
+	if ((index = data.value.lastIndexOf("\n\nsettings:")) != -1)
+		data.value = data.value.substring(0, index);
+	
+	data.value += "\n\nsettings:";
+	for (element of document.getElementById("geninfo").querySelectorAll("input[type=text]"))
+		document.getElementById("data").value += "\n" + element.id + "=" + element.value;
+}
+
+function getLine(start) {
+	for (line of data.value.split("\n"))
+		if (line.startsWith(start)) return line;
+	return null;
+}
+
+function getSetting(id) {
+	if ((line = getLine(id + "=")) != null) return line.split("=")[1];
+	return null;
 }
 
 /* core */
@@ -150,7 +193,40 @@ function drawTextRect(text, x, y, width, height) {
 	c.fillRect(x, y, width, height);
 	c.fillStyle = foreground;
 	c.strokeRect(x, y, width, height);
-	c.fillText(text, x + width/2, y + height/2)
+	if (getWrap(text, width).tail.length == 0) { drawText(text, x + width/2, y + height/2); return; }
+	let lines = "";
+	var wrap;
+	while ((wrap = getWrap(text, width)).tail.length != 0) {
+		lines += wrap.head + "\n";
+		text = wrap.tail;
+	}
+	lines += wrap.head;
+	drawText(lines, x + width/2, y + height/2);
+}
+
+function getWrap(text, width) {
+	words = text.split(" ");
+	for (i=words.length; i>0; i--) {
+		head = words.slice(0, i).join(" ");
+		tail = words.slice(i, words.length).join(" ");
+		if (c.measureText(head).width + textPadding*2 < width)
+			return {
+				head: head,
+				tail: tail
+			}
+	}
+	return {
+		head: ".",
+		tail: ""
+	}
+}
+
+function drawText(text, centerX, centerY) {
+	let lines = text.split("\n");
+	centerY -= Math.floor(lines.length/2) * lineHeight - (1 - lines.length%2) * lineHeight/2;
+	centerY -= lineHeight;
+	for (line of lines)
+		c.fillText(line, centerX, centerY += lineHeight);
 }
 
 function getInt(id) { return parseInt(getText(id)); }
