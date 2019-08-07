@@ -20,7 +20,7 @@
 		<tr><td>text padding</td><td><input id="textPadding" type="text" value="4" /></td></tr>
 		<tr><td>day of week codes</td><td><input id="shortDays" type="text" value="mo,tu,we,th,fr" /></td></tr>
 		<tr><td>day of week display</td><td><input id="longDays" type="text" value="Mon,Tue,Wed,Thu,Fri" /></td></tr>
-		<tr><td><input type="button" value="import settings" onclick="importSettings();" /></td><td><input type="button" value="append/replace settings" onclick="appendSettings();" /></td></tr>
+		<tr><td><input type="button" value="import settings, generate" onclick="importSettings();" /></td><td><input type="button" value="append/replace settings" onclick="appendSettings();" /></td></tr>
 	</table>
 </div>
 
@@ -104,8 +104,6 @@ if (srcurl){
 	fetch(srcurl).then((response) => response.text()).then(text => {
 		document.getElementById("data").value = text;
 		importSettings(); // sets ui values from text
-		initCanvas(); // imports values from ui
-		drawSchedule(text);
 	});
 }
 
@@ -164,6 +162,7 @@ function importSettings() {
 	for (element of document.getElementById("geninfo").querySelectorAll("input[type=text]"))
 		if ((settingValue = getSetting(element.id)) != null)
 			element.value = settingValue;
+	gen();
 }
 
 function appendSettings() {
@@ -193,22 +192,21 @@ function drawTextRect(text, x, y, width, height) {
 	c.fillRect(x, y, width, height);
 	c.fillStyle = foreground;
 	c.strokeRect(x, y, width, height);
-	if (getWrap(text, width).tail.length == 0) { drawText(text, x + width/2, y + height/2); return; }
+	if ((burrito = getWrap(text, width)).tail.length == 0) { drawText(burrito.head, x + width/2, y + height/2); return; }
 	let lines = "";
-	var wrap;
-	while ((wrap = getWrap(text, width)).tail.length != 0) {
-		lines += wrap.head + "\n";
-		text = wrap.tail;
+	while ((burrito = getWrap(text, width)).tail.length != 0) {
+		lines += burrito.head + "\n";
+		text = burrito.tail;
 	}
-	lines += wrap.head;
+	lines += burrito.head;
 	drawText(lines, x + width/2, y + height/2);
 }
 
 function getWrap(text, width) {
-	words = text.split(" ");
-	for (i=words.length; i>0; i--) {
-		head = words.slice(0, i).join(" ");
-		tail = words.slice(i, words.length).join(" ");
+	let words = text.split(" ");
+	for (let i=words.length; i>0; i--) {
+		let head = words.slice(0, i).join(" ");
+		let tail = words.slice(i, words.length).join(" ");
 		if (c.measureText(head).width + textPadding*2 < width)
 			return {
 				head: head,
