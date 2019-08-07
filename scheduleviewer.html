@@ -1,0 +1,161 @@
+<html>
+
+<div id="scheduleBox" class="box"><div id="sbInner"><canvas id="scheduleCanvas"></div></div>
+
+<div id="geninfo" class="box">
+	<textarea id="data"></textarea>
+	<table>
+		<tr><td>marginX</td><td><input id="marginX" type="text" value="50" /></td></tr>
+		<tr><td>marginY</td><td><input id="marginY" type="text" value="50" /></td></tr>
+		<tr><td>startHour</td><td><input id="startHour" type="text" value="8" /></td></tr>
+		<tr><td>endHour</td><td><input id="endHour" type="text" value="18" /></td></tr>
+		<tr><td>blockWidth</td><td><input id="blockWidth" type="text" value="100" /></td></tr>
+		<tr><td>blockHeight</td><td><input id="blockHeight" type="text" value="60" /></td></tr>
+		<tr><td>font</td><td><input id="font" type="text" value="12px Arial" /></td></tr>
+		<tr><td>foreground</td><td><input id="foreground" type="text" value="#000" /></td></tr>
+		<tr><td>background</td><td><input id="background" type="text" value="#fff" /></td></tr>
+		<tr><td>guideOpacity</td><td><input id="guideOpacity" type="text" value="0.1" /></td></tr>
+		<tr><td>day of week codes</td><td><input id="shortDays" type="text" value="mo,tu,we,th,fr" /></td></tr>
+		<tr><td>day of week display</td><td><input id="longDays" type="text" value="Mon,Tue,Wed,Thu,Fri" /></td></tr>
+		<tr><td></td><td><input type="button" value="generate" onclick="gen();" /></td></tr>
+	</table>
+</div>
+
+<style>
+.box { background-color: #eee; padding: 1em; margin: 1em }
+#sbInner { background-color: #fff; padding: 1em }
+
+body { display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row-reverse
+}
+#scheduleBox { display: inline-block }
+#geninfo { width:400px }
+
+#geninfo table { margin: auto }
+#geninfo td { padding: 0.2em }
+#geninfo td:first-child { text-align: right; }
+#data { width: 100%; height: 25em }
+</style>
+
+<script>
+
+var shortDays = ["mo", "tu", "we", "th", "fr"];
+var longDays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+
+var marginX = 30, marginY = 30;
+var startHour = 8, endHour = 18;
+var blockWidth = 100, blockHeight = 60;
+var foreground, background;
+var guideOpacity;
+
+var canvas, c;
+initCanvas();
+
+function initCanvas() {
+	marginX = getInt("marginX");
+	marginY = getInt("marginY");
+	startHour = getInt("startHour");
+	endHour = getInt("endHour");
+	blockWidth = getInt("blockWidth");
+	blockHeight = getInt("blockHeight");
+	foreground = getText("foreground");
+	background = getText("background");
+	guideOpacity = parseFloat(getText("guideOpacity"));
+	shortDays = getText("shortDays").split(",");
+	longDays = getText("longDays").split(",");
+	
+	canvas = document.getElementById("scheduleCanvas");
+	canvas.width = marginX + longDays.length*blockWidth;
+	canvas.height = marginY + (endHour - startHour + 1) * blockHeight;
+
+	c = canvas.getContext("2d");
+	c.globalAlpha = 1;
+	c.font = getText("font");
+	c.strokeStyle = foreground;
+	c.textAlign = "center";
+	c.textBaseline = "middle";
+
+	c.fillStyle = background;
+	c.fillRect(0, 0, canvas.width, canvas.height);
+	c.fillStyle = foreground;
+
+	drawTimes();
+	drawLines();
+	drawDOWLabels();
+}
+
+let url = new URL(window.location.href);
+let srcurl = url.searchParams.get("src");
+
+if (srcurl){
+	fetch(srcurl).then((response) => response.text()).then(text => {
+		document.getElementById("data").value = text;
+		drawSchedule(text);
+	});
+}
+
+function gen() {
+	initCanvas();
+	drawSchedule(document.getElementById("data").value);
+}
+
+function drawSchedule(data) {
+	for (dow of data.split("\n\n")) drawDOW (dow);
+}
+
+function drawDOW(string) { // 1st line: 2-char dows, 2nd line and beyond: see parseBlock
+	lines = string.split("\n");
+	for (day of lines[0].toLowerCase().split(/(?=(?:..)*$)/)) // splits mowefrtu into mo, we, fr, tu
+		for (block of lines.slice(1, lines.length).map(parseBlock)) // takes remaining lines and parses them into blocks
+			if (shortDays.indexOf(day) != -1) drawTextRect(block[0], marginX + shortDays.indexOf(day)*blockWidth, marginY + (block[1] - startHour)*blockHeight, blockWidth, (block[2] - block[1])*blockHeight);
+}
+
+/* parsing */
+
+function parseBlock(string) { // "HH:MM-HH:MM Label"
+	return [string.substr(12), parseHours(string, 0, 5), parseHours(string, 6, 5)];
+}
+
+function parseHours(string, start, end) {
+	parts = string.substr(start, end).split(":");
+	return parseInt(parts[0]) + parseInt(parts[1])/60;
+}
+
+/* UI graphics */
+
+function drawDOWLabels() {
+	for (i=0; i<longDays.length; i++) drawTextRect(longDays[i], marginX + i*blockWidth, 0, blockWidth, marginY );
+}
+
+function drawTimes() { // (num, num, num, num, num)
+	for (hour=startHour; hour<=endHour; hour++)
+		drawTextRect(hour + "", 0, marginY + (hour - startHour)*blockHeight, marginX, blockHeight);
+}
+
+function drawLines(blockWidth){
+	for (hour=startHour+1; hour<=endHour; hour++) {
+		c.globalAlpha = guideOpacity;
+		c.strokeRect(marginX, marginY + (hour - startHour)*blockHeight, canvas.width - marginY, 0);
+		c.globalAlpha = 1;
+	}
+}
+
+/* core */
+
+function drawTextRect(text, x, y, width, height) {
+	c.fillStyle = background;
+	c.fillRect(x, y, width, height);
+	c.fillStyle = foreground;
+	c.strokeRect(x, y, width, height);
+	c.fillText(text, x + width/2, y + height/2)
+}
+
+function getInt(id) { return parseInt(getText(id)); }
+function getText(id) { return document.getElementById(id).value; }
+
+</script>
+
+</html>
