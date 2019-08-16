@@ -1,7 +1,64 @@
 <html>
 
-<textarea id="console-output"></textarea>
 <script src="jquery-3.4.1.min.js"></script>
 <script src="test.js"></script>
+<script src="schedule.js"></script>
+
+<div id="scheduleBox" class="box"><div id="sbInner"><canvas id="schedule"></div></div>
+
+<div id="geninfo" class="box">
+	<textarea id="classesToAdd"></textarea>
+	<input type="button" value="add classes" onclick="addClasses();" />
+	<table>
+	<tr><td></td><td></td></tr>
+		<tr><td>elementary arabic ofzo</td><td><input class="class" id="10038" type="checkbox" onchange="gen();">10038 - some arabic stuff</input></td></tr>
+	</table>
+</div>
+
+<style>
+.box { background-color: #eee; padding: 1em; margin: 1em }
+#sbInner { background-color: #fff; padding: 1em }
+
+body { display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row-reverse
+}
+#scheduleBox { display: inline-block }
+#geninfo { width:400px }
+
+#geninfo table { margin: auto }
+#geninfo td { padding: 0.2em }
+#geninfo td:first-child { text-align: right; }
+#classesToAdd { width: 100%; height: 25em }
+</style>
+
+<script>
+
+s = new ScheduleCanvas("schedule", {background: "#f0f"});
+
+s.drawSchedule("");
+
+function addClasses() {
+	for (let c of document.getElementById("classesToAdd").value.split("\n")) {
+		promiseClass(c, cls => {
+			$("#geninfo table").append(`<tr><td>${cls.title}</td><td><input class="class" id="${c}" type="checkbox" onchange="gen();" checked>${c}</input></td></tr>`);
+			gen();
+		});
+	}
+	
+}
+
+function gen(){
+	let classes = [];
+	for (elem of document.getElementById("geninfo").querySelectorAll(".class"))
+		if (elem.checked) classes.push(elem.id);
+	console.log(classes);
+	promiseSchedule(classes, sched => s.drawSchedule(sched));
+	//s.drawSchedule(document.getElementById("console-output").value);
+}
+
+</script>
 
 </html>

@@ -4,28 +4,42 @@ function log(text) {
 	
 }
 
-function printClass(classCode) {
+function promiseClass(classCode, pfunc) {
 	scurl("https://rabi.phys.virginia.edu/mySIS/CS2/sectiontip.php?ClassNumber=" + classCode, text => {
-		console.log(text);
 		let p = new Parser(text);
 
 		p.deleteUntil('class="InfoClass">');
 		p.deleteUntil('class="InfoClass">');
 		let title = p.deleteUntil('<br');
+		
+		let times = [];
 
 		for (let time of getTimes(p)) {
 			timeparts = time.split(' ');
-			log(timeparts[0]);
-			log(`${convert12hr(timeparts[1])}-${convert12hr(timeparts[3])} ${title}\n`);
+			times.push ({
+				dow: timeparts[0],
+				starthour: convert12hr(timeparts[1]),
+				endhour: convert12hr(timeparts[3])
+			});
 		}
+		
+		pfunc({title: title, times: times}); // returns updated schedule
+		
 	});
 }
 
-generateSchedule("15450\n11975\n16647\n18452\n19348\n18453\n19350\n16036\n16142")
+//generateSchedule("15450\n11975\n16647\n18452\n19348\n18453\n19350\n16036\n16142");
 
-function generateSchedule(text) {
-	for (let classCode of text.split('\n')) {
-		printClass(classCode);
+function promiseSchedule(classCodes, pfunc) {
+	let append = '';
+	if (classCodes.length == 0) { pfunc(""); return; }
+	for (let classCode of classCodes) {
+		promiseClass(classCode, cls => {
+			for (time of cls.times) {
+				append += `${time.dow}\n${time.starthour}-${time.endhour} ${cls.title}\n\n`;
+			}
+			pfunc(append);
+		});
 	}
 }
 
