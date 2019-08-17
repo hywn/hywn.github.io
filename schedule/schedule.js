@@ -3,12 +3,13 @@ var longDays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 class ScheduleCanvas {
 	constructor(canvasID,
-		{startHour=8, endHour=18,
+		{ startHour=8, endHour=18,
 		blockWidth=100, blockHeight=60,
 		marginX=50, marginY=50,
 		background='#fff', foreground='#000',
-		guideOpacity=0.2, lineHeight=14, textPadding=5, font='12px Arial'}={}) {
+		guideOpacity=0.2, lineHeight=14, textPadding=5, font='12px Arial' }={}) {
 		this.startHour = startHour; this.endHour = endHour; this.blockWidth = blockWidth; this.blockHeight = blockHeight; this.marginX = marginX; this.marginY = marginY; this.background = background; this.foreground = foreground; this.guideOpacity = guideOpacity; this.lineHeight = lineHeight; this.textPadding = textPadding; this.font = font;
+		
 		this.canvas = document.getElementById(canvasID);
 		this.canvas.width = marginX + longDays.length*blockWidth;
 		this.canvas.height = marginY + (endHour - startHour + 1) * blockHeight;
@@ -22,19 +23,13 @@ class ScheduleCanvas {
 		
 		this.clear();
 	}
-	clear(){
-		/*this.c.fillStyle = this.background;
-		this.c.fillRect(0, 0, this.canvas.width, this.canvas.height);
-		this.c.fillStyle = this.foreground;*/
-		this.c.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	}
-	drawSchedule(text){
-		window.requestAnimationFrame(() => this.drawScheduleCallback(text));
-	}
+	clear() { this.c.clearRect(0, 0, this.canvas.width, this.canvas.height) }
+	drawSchedule(text) { window.requestAnimationFrame(() => this.drawScheduleCallback(text)); }
 	drawScheduleCallback(text) { //text
 		this.clear();
 		this.drawTimes();
 		this.drawDOWLabels();
+		this.drawLines();
 		for (let chunk of text.split('\n\n')) {
 			let lines = chunk.split("\n");
 			for (let dow of lines[0].toLowerCase().split(/(?=(?:..)*$)/)) // splits mowefrtu into mo, we, fr, tu
@@ -48,43 +43,35 @@ class ScheduleCanvas {
 		}
 	}
 	drawTextRect(text, x, y, width, height) {
-		this.c.fillStyle = this.background;
-		this.c.fillRect(x, y, width, height);
-		this.c.fillStyle = this.foreground;
-		
+		this.c.clearRect(x, y, width, height);
 		this.c.strokeRect(x, y, width, height);
 		
+		this.drawText(this.wrapText(text, width - this.textPadding*2 ), x + width/2, y + height/2);
+	}
+	wrapText(text, targetWidth) {
 		var burrito;
 		let lines = "";
-		while ((burrito = this.getWrap(text, width)).tail.length != 0) {
+		while ((burrito = this.getWrap(text, targetWidth)).tail.length != 0) {
 			lines += burrito.head + "\n";
 			text = burrito.tail;
 		}
 		lines += burrito.head;
-		this.drawText(lines, x + width/2, y + height/2);
+		return lines;
+	}
+	getWrap(text, targetWidth) {
+		let words = text.split(" ");
+		for (let i=words.length; i>0; i--) { // loops thru string backwards and finds words that fit in box
+			let head = words.slice(0, i).join(' ');
+			if (this.c.measureText(head).width < targetWidth)
+				return { head: head, tail: words.slice(i, words.length).join(' ') }
+		}
+		return { head: '.', tail: '' }
 	}
 	drawText(text, centerX, centerY) {
 		let lines = text.split("\n");
-		centerY -= Math.floor(lines.length/2) * this.lineHeight - (1 - lines.length%2) * this.lineHeight/2;
-		centerY -= this.lineHeight;
+		centerY -= Math.floor(lines.length/2 + 1) * this.lineHeight + (lines.length%2 - 1) * this.lineHeight/2;
 		for (let line of lines)
 			this.c.fillText(line, centerX, centerY += this.lineHeight);
-	}
-	getWrap(text, width) {
-		let words = text.split(" ");
-		for (let i=words.length; i>0; i--) {
-			let head = words.slice(0, i).join(" ");
-			let tail = words.slice(i, words.length).join(" ");
-			if (this.c.measureText(head).width + this.textPadding*2 < width)
-				return {
-					head: head,
-					tail: tail
-				}
-		}
-		return {
-			head: ".",
-			tail: ""
-		}
 	}
 	drawTimes() { // (num, num, num, num, num)
 		for (let hour=this.startHour; hour<=this.endHour; hour++)
@@ -92,6 +79,13 @@ class ScheduleCanvas {
 	}
 	drawDOWLabels() {
 		for (let day=0; day<longDays.length; day++) this.drawTextRect(longDays[day], this.marginX + day*this.blockWidth, 0, this.blockWidth, this.marginY );
+	}
+	drawLines(){
+		for (let hour=this.startHour+1; hour<=this.endHour; hour++) {
+			this.c.globalAlpha = this.guideOpacity;
+			this.c.strokeRect(this.marginX, this.marginY + (hour - this.startHour)*this.blockHeight, this.canvas.width - this.marginY, 0);
+			this.c.globalAlpha = 1;
+		}
 	}
 }
 
@@ -105,11 +99,3 @@ function parseHours(string, start, end) {
 	parts = string.substr(start, end).split(":");
 	return parseInt(parts[0]) + parseInt(parts[1])/60;
 }
-
-/* UI graphics */
-
-function drawDOWLabels() { // note: idk how var, let, noname works
-	for (day=0; day<longDays.length; day++) drawTextRect(longDays[day], marginX + day*blockWidth, 0, blockWidth, marginY );
-}
-
-
