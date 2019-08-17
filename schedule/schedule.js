@@ -27,7 +27,8 @@ class ScheduleCanvas
        clear()
             { this.c.clearRect(0, 0, this.canvas.width, this.canvas.height) }
 
-       drawSchedule(text) { window.requestAnimationFrame(() => this.drawScheduleCallback(text)) }
+       drawSchedule(text)
+            { window.requestAnimationFrame(() => this.drawScheduleCallback(text)) }
 
        drawScheduleCallback(text)
             { this.clear()
@@ -74,7 +75,7 @@ class ScheduleCanvas
               for (let line of lines)
                      this.c.fillText(line, centerX, centerY += this.lineHeight) }
 
-       drawTimes() // (num, num, num, num, num)
+       drawTimes()
             { for (let hour=this.startHour; hour<=this.endHour; hour++)
                    this.drawTextRect(hour + '', 0, this.marginY + (hour - this.startHour)*this.blockHeight, this.marginX, this.blockHeight) }
 
