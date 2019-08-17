@@ -27,7 +27,7 @@ class ScheduleCanvas
        clear()
             { this.c.clearRect(0, 0, this.canvas.width, this.canvas.height) }
 
-       drawSchedule(text) { window.requestAnimationFrame(() => this.drawScheduleCallback(text)); }
+       drawSchedule(text) { window.requestAnimationFrame(() => this.drawScheduleCallback(text)) }
 
        drawScheduleCallback(text)
             { this.clear()
@@ -61,9 +61,9 @@ class ScheduleCanvas
               return lines }
 
        getWrap(text, targetWidth)
-            { let words = text.split(' ');
+            { let words = text.split(' ')
               for (let i=words.length; i>0; i--) // loops thru string backwards and finds words that fit in box
-                   { let head = words.slice(0, i).join(' ');
+                   { let head = words.slice(0, i).join(' ')
                      if (this.c.measureText(head).width < targetWidth)
                             return { head: head, tail: words.slice(i, words.length).join(' ') } }
               return { head: '.', tail: '' } }
