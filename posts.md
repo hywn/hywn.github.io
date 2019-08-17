@@ -1,4 +1,7 @@
-<html>
+---
+layout: page
+title: "my posts :))"
+---
 <ul>
 	{% for post in site.posts %}
 		<li>
@@ -6,4 +9,3 @@
 		</li>
 	{% endfor %}
 </ul>
-</html>
