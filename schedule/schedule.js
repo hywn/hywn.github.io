@@ -1,14 +1,12 @@
-var shortDays = ["mo", "tu", "we", "th", "fr"];
-var longDays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-
 class ScheduleCanvas {
 	constructor(canvasID,
 		{ startHour=8, endHour=18,
 		blockWidth=100, blockHeight=60,
 		marginX=50, marginY=50,
 		background='#fff', foreground='#000',
-		guideOpacity=0.2, lineHeight=14, textPadding=5, font='12px Arial' }={}) {
-		this.startHour = startHour; this.endHour = endHour; this.blockWidth = blockWidth; this.blockHeight = blockHeight; this.marginX = marginX; this.marginY = marginY; this.background = background; this.foreground = foreground; this.guideOpacity = guideOpacity; this.lineHeight = lineHeight; this.textPadding = textPadding; this.font = font;
+		guideOpacity=0.2, lineHeight=14, textPadding=5, font='12px Arial',
+		shortDays=["mo", "tu", "we", "th", "fr"], longDays=["Mon", "Tue", "Wed", "Thu", "Fri"]}={}) {
+		this.startHour = startHour; this.endHour = endHour; this.blockWidth = blockWidth; this.blockHeight = blockHeight; this.marginX = marginX; this.marginY = marginY; this.background = background; this.foreground = foreground; this.guideOpacity = guideOpacity; this.lineHeight = lineHeight; this.textPadding = textPadding; this.font = font; this.shortDays = shortDays; this.longDays = longDays;
 		
 		this.canvas = document.getElementById(canvasID);
 		this.canvas.width = marginX + longDays.length*blockWidth;
@@ -34,9 +32,9 @@ class ScheduleCanvas {
 			let lines = chunk.split("\n");
 			for (let dow of lines[0].toLowerCase().split(/(?=(?:..)*$)/)) // splits mowefrtu into mo, we, fr, tu
 				for (let block of lines.slice(1, lines.length).map(parseBlock)) // takes remaining lines and parses them into blocks
-					if (shortDays.indexOf(dow) != -1)
+					if (this.shortDays.indexOf(dow) != -1)
 						this.drawTextRect(block[0],
-							this.marginX + shortDays.indexOf(dow)*this.blockWidth,
+							this.marginX + this.shortDays.indexOf(dow)*this.blockWidth,
 							this.marginY + (block[1] - this.startHour)*this.blockHeight,
 							this.blockWidth,
 							(block[2] - block[1])*this.blockHeight);
@@ -78,7 +76,7 @@ class ScheduleCanvas {
 			this.drawTextRect(hour + "", 0, this.marginY + (hour - this.startHour)*this.blockHeight, this.marginX, this.blockHeight);
 	}
 	drawDOWLabels() {
-		for (let day=0; day<longDays.length; day++) this.drawTextRect(longDays[day], this.marginX + day*this.blockWidth, 0, this.blockWidth, this.marginY );
+		for (let day=0; day<this.longDays.length; day++) this.drawTextRect(this.longDays[day], this.marginX + day*this.blockWidth, 0, this.blockWidth, this.marginY );
 	}
 	drawLines(){
 		for (let hour=this.startHour+1; hour<=this.endHour; hour++) {

@@ -1,5 +1,7 @@
 <html>
 
+<script src="schedule.js"></script>
+
 <div id="scheduleBox" class="box"><div id="sbInner"><canvas id="scheduleCanvas"></div></div>
 
 <div id="geninfo" class="box">
@@ -25,77 +27,26 @@
 </div>
 
 <style>
-.box { background-color: #eee; padding: 1em; margin: 1em }
-#sbInner { background-color: #fff; padding: 1em }
-
 body { display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	flex-direction: row-reverse
-}
-#scheduleBox { display: inline-block }
-#geninfo { width:400px }
+	flex-direction: row-reverse }
 
+.box { background-color: #eee; padding: 1em; margin: 1em }
+	
+#sbInner { background-color: #fff; padding: 1em }
+#scheduleBox { display: inline-block }
+
+#geninfo { width:400px }
+#data { width: 100%; height: 25em }
 #geninfo table { margin: auto }
 #geninfo td { padding: 0.2em }
-#geninfo td:first-child { text-align: right; }
-#data { width: 100%; height: 25em }
+#geninfo td:first-child { text-align: right }
 </style>
 
 <script>
-
-var shortDays = ["mo", "tu", "we", "th", "fr"];
-var longDays = ["Mon", "Tue", "Wed", "Thu", "Fri"];
-
-var marginX = 30, marginY = 30;
-var startHour = 8, endHour = 18;
-var blockWidth = 100, blockHeight = 60;
-var foreground, background;
-var guideOpacity;
-var lineHeight = 14;
-var textPadding = 5;
-
 var data = document.getElementById("data");
-
-var canvas, c;
-initCanvas();
-
-function initCanvas() {
-	marginX = getInt("marginX");
-	marginY = getInt("marginY");
-	startHour = getInt("startHour");
-	endHour = getInt("endHour");
-	blockWidth = getInt("blockWidth");
-	blockHeight = getInt("blockHeight");
-	foreground = getText("foreground");
-	background = getText("background");
-	guideOpacity = parseFloat(getText("guideOpacity"));
-	lineHeight = getInt("lineHeight");
-	textPadding = getInt("textPadding");
-	shortDays = getText("shortDays").split(",");
-	longDays = getText("longDays").split(",");
-	
-	canvas = document.getElementById("scheduleCanvas");
-	canvas.width = marginX + longDays.length*blockWidth;
-	canvas.height = marginY + (endHour - startHour + 1) * blockHeight;
-
-	c = canvas.getContext("2d");
-	c.globalAlpha = 1;
-	c.font = getText("font");
-	c.strokeStyle = foreground;
-	c.textAlign = "center";
-	c.textBaseline = "middle";
-
-	c.fillStyle = background;
-	document.getElementById("sbInner").style.backgroundColor = background;
-	c.fillRect(0, 0, canvas.width, canvas.height);
-	c.fillStyle = foreground;
-
-	drawTimes();
-	drawLines();
-	drawDOWLabels();
-}
 
 let url = new URL(window.location.href);
 let srcurl = url.searchParams.get("src");
@@ -108,54 +59,23 @@ if (srcurl){
 }
 
 function gen() {
-	initCanvas();
-	drawSchedule(document.getElementById("data").value);
-}
+	s = new ScheduleCanvas("scheduleCanvas", { marginX: getInt("marginX"),
+		marginY: getInt("marginY"),
+		startHour: getInt("startHour"),
+		endHour: getInt("endHour"),
+		blockWidth: getInt("blockWidth"),
+		blockHeight: getInt("blockHeight"),
+		foreground: getText("foreground"),
+		background: getText("background"),
+		font: getText("font"),
+		guideOpacity: parseFloat(getText("guideOpacity")),
+		lineHeight: getInt("lineHeight"),
+		textPadding: getInt("textPadding"),
+		shortDays: getText("shortDays").split(","),
+		longDays: getText("longDays").split(",") });
+	document.querySelector("#sbInner").style.backgroundColor = s.background;
 
-function drawSchedule(data) {
-	for (dow of data.split("\n\n")) drawDOW (dow);
-}
-
-function drawDOW(string) { // 1st line: 2-char dows, 2nd line and beyond: see parseBlock
-	let lines = string.split("\n");
-	for (day of lines[0].toLowerCase().split(/(?=(?:..)*$)/)) // splits mowefrtu into mo, we, fr, tu
-		for (block of lines.slice(1, lines.length).map(parseBlock)) // takes remaining lines and parses them into blocks
-			if (shortDays.indexOf(day) != -1)
-				drawTextRect(block[0],
-				marginX + shortDays.indexOf(day)*blockWidth,
-				marginY + (block[1] - startHour)*blockHeight,
-				blockWidth,
-				(block[2] - block[1])*blockHeight);
-}
-
-/* parsing */
-
-function parseBlock(string) { // "HH:MM-HH:MM Label"
-	return [string.substr(12), parseHours(string, 0, 5), parseHours(string, 6, 5)];
-}
-
-function parseHours(string, start, end) {
-	parts = string.substr(start, end).split(":");
-	return parseInt(parts[0]) + parseInt(parts[1])/60;
-}
-
-/* UI graphics */
-
-function drawDOWLabels() { // note: idk how var, let, noname works
-	for (day=0; day<longDays.length; day++) drawTextRect(longDays[day], marginX + day*blockWidth, 0, blockWidth, marginY );
-}
-
-function drawTimes() { // (num, num, num, num, num)
-	for (hour=startHour; hour<=endHour; hour++)
-		drawTextRect(hour + "", 0, marginY + (hour - startHour)*blockHeight, marginX, blockHeight);
-}
-
-function drawLines(){
-	for (hour=startHour+1; hour<=endHour; hour++) {
-		c.globalAlpha = guideOpacity;
-		c.strokeRect(marginX, marginY + (hour - startHour)*blockHeight, canvas.width - marginY, 0);
-		c.globalAlpha = 1;
-	}
+	s.drawSchedule(document.getElementById("data").value)
 }
 
 function importSettings() {
@@ -185,51 +105,8 @@ function getSetting(id) {
 	return null;
 }
 
-/* core */
-
-function drawTextRect(text, x, y, width, height) {
-	c.fillStyle = background;
-	c.fillRect(x, y, width, height);
-	c.fillStyle = foreground;
-	c.strokeRect(x, y, width, height);
-	if ((burrito = getWrap(text, width)).tail.length == 0) { drawText(burrito.head, x + width/2, y + height/2); return; }
-	let lines = "";
-	while ((burrito = getWrap(text, width)).tail.length != 0) {
-		lines += burrito.head + "\n";
-		text = burrito.tail;
-	}
-	lines += burrito.head;
-	drawText(lines, x + width/2, y + height/2);
-}
-
-function getWrap(text, width) {
-	let words = text.split(" ");
-	for (let i=words.length; i>0; i--) {
-		let head = words.slice(0, i).join(" ");
-		let tail = words.slice(i, words.length).join(" ");
-		if (c.measureText(head).width + textPadding*2 < width)
-			return {
-				head: head,
-				tail: tail
-			}
-	}
-	return {
-		head: ".",
-		tail: ""
-	}
-}
-
-function drawText(text, centerX, centerY) {
-	let lines = text.split("\n");
-	centerY -= Math.floor(lines.length/2) * lineHeight - (1 - lines.length%2) * lineHeight/2;
-	centerY -= lineHeight;
-	for (line of lines)
-		c.fillText(line, centerX, centerY += lineHeight);
-}
-
 function getInt(id) { return parseInt(getText(id)); }
 function getText(id) { return document.getElementById(id).value; }
-
 </script>
 
 </html>
