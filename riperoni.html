@@ -1,36 +1,29 @@
-<!DOCTYPE html>
-<html>
-<body>
+<canvas>no canvas :(((((</canvas>
 
-<canvas id="myCanvas">
-Your browser does not support the HTML5 canvas tag.</canvas>
+<style> html, body { overflow: hidden; margin: 0 } </style>
 
 <script>
-var c = document.getElementById("myCanvas");
-c.width = window.innerWidth;
-c.height = window.innerHeight;
 
-var ctx = c.getContext("2d");
-ctx.font = "30px Arial";
-ctx.fillText("riperoni",10,50);
+let canvas = document.querySelector("canvas");
+canvas.width = window.innerWidth; 
+canvas.height = window.innerHeight;
 
-c.addEventListener('click', function(element){
+let c = canvas.getContext("2d");
+c.font = "30px Arial";
+c.fillText("riperoni", 50, 50);
 
-ctx.fillStyle = getRandomColor();
-ctx.fillText("riperoni", Math.random()*c.width, Math.random()*c.height);
+canvas.addEventListener('click', e => {
+	c.fillStyle = getRandomColor();
+	c.fillText("riperoni", Math.random()*canvas.width, Math.random()*canvas.height);
+});
 
-}, false);
+let letters = '0123456789ABCDEF'.split('');
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+	let color = '#';
+	for (var i = 0; i < 6; i++)
+		color += letters[Math.floor(Math.random() * 16)];
+	return color;
 }
 
 </script>
-
-</body>
-</html>
