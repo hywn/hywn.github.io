@@ -1,0 +1,23 @@
+<textarea autofocus placeholder="directions: type 'yo' and then press enter" id="yoo"></textarea>
+
+<style>
+body, textarea { margin: 0; padding: 0 }
+#yoo { width: 100%; height: 100%; border: none; padding: 1em }
+</style>
+
+<script>
+
+let yoo = document.querySelector("#yoo")
+
+yoo.addEventListener('keydown', e => {
+	if (e.key !== 'Enter') return
+	lmao()
+	yoo.readOnly = true
+})
+
+function lmao() {
+	yoo.value += yoo.value.charAt(yoo.value.length - 1)
+	setInterval(requestAnimationFrame(lmao), 500)
+}
+
+</script>
