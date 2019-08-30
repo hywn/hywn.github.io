@@ -7,10 +7,10 @@
 <div id="scheduleBox" class="box"><div id="sbInner"><canvas id="schedule"></div></div>
 
 <div id="geninfo" class="box">
-	<textarea id="classesToAdd"></textarea>
+	<textarea placeholder="enter class codes (e.g. 10038) separated by newlines"id="classesToAdd"></textarea>
 	<table>
 		<tr><td></td><td><input type="button" value="add classes" onclick="addClasses();" /></td></tr>
-		<tr><td>elementary arabic ofzo</td><td><input class="class" id="10038" type="checkbox" onchange="gen();">10038 - some arabic stuff</input></td></tr>
+		<tr><td>elementary arabic ofzo</td><td><input class="class" id="10038" type="checkbox" onchange="gen();">10038</input></td></tr>
 	</table>
 </div>
 
@@ -39,14 +39,22 @@ s = new ScheduleCanvas("schedule", {background: "#fff"});
 
 s.drawSchedule("");
 
+let url = new URL(window.location.href);
+let srcurl = url.searchParams.get("src");
+
+if (srcurl) // sets ui values from text
+     { fetch(srcurl).then((response) => response.text()).then(text => { document.querySelector("#classesToAdd").value = text
+                                                                        addClasses() }) }
+
 function addClasses() {
-	for (let c of document.getElementById("classesToAdd").value.split("\n")) {
+	let cot = document.querySelector("#classesToAdd")
+	for (let c of cot.value.split("\n")) {
 		promiseClass(c, cls => {
 			$("#geninfo table").append(`<tr><td>${cls.title}</td><td><input class="class" id="${c}" type="checkbox" onchange="gen();" checked>${c}</input></td></tr>`);
 			gen();
 		});
 	}
-	
+	cot.value = ''
 }
 
 function gen(){
@@ -55,7 +63,6 @@ function gen(){
 		if (elem.checked) classes.push(elem.id);
 	console.log(classes);
 	promiseSchedule(classes, sched => s.drawSchedule(sched));
-	//s.drawSchedule(document.getElementById("console-output").value);
 }
 
 </script>
