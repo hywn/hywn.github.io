@@ -9,6 +9,7 @@ textarea { width: 100%; height: 50%; border: none; resize: none; padding: 1em }
 <script>
 
 let input = document.querySelector("#input")
+let output = document.querySelector("#output")
 
 input.addEventListener('keydown', e => {
 	if (!(e.shiftKey && e.key === 'Enter')) return
@@ -35,10 +36,8 @@ function translate() {
 
 function untranslate() {
 	let val = ''
-	for (const word of output.value.split('  ')) {
-		console.log(word)
+	for (const word of output.value.split('  ')) 
 		val += chars[word.split(' ').length - 1]
-	}
 	input.value = val
 }
 
