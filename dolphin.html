@@ -1,0 +1,45 @@
+<textarea id="input" autofocus placeholder="directions: type text and press shift+enter to translate" id="yoo"></textarea>
+<textarea id="output" placeholder="directions: type text and press shift+enter to untranslate" id="yoo"></textarea>
+
+<style>
+body, textarea { margin: 0; padding: 0 }
+textarea { width: 100%; height: 50%; border: none; padding: 1em }
+</style>
+
+<script>
+
+let input = document.querySelector("#input")
+
+input.addEventListener('keydown', e => {
+	if (!(e.shiftKey && e.key === 'Enter')) return
+	translate()
+	e.preventDefault()
+})
+
+output.addEventListener('keydown', e => {
+	if (!(e.shiftKey && e.key === 'Enter')) return
+	untranslate()
+	e.preventDefault()
+})
+
+const chars = '?0123456789\n\t abcdefghijklmnopqrstuvwxyz"\'{};:-=_+()&*^%$#@!<>,./\\|ABCDEFGHIJKLMNOPQRSTUVWXYZ' 
+
+function translate() {
+	let val = ''
+	for (const c of input.value) {
+		let index = chars.indexOf(c)
+		val += 'dolphin '.repeat(index + 1 + ((index == -1)? 1 : 0)) + ' '
+	}
+	output.value = val.trim()
+}
+
+function untranslate() {
+	let val = ''
+	for (const word of output.value.split('  ')) {
+		console.log(word)
+		val += chars[word.split(' ').length - 1]
+	}
+	input.value = val
+}
+
+</script>
