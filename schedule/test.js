@@ -9,9 +9,10 @@ function promiseClass(classCode, pfunc) {
               let times = []
 
               for (let time of getTimes(p)) {
-                     timeparts = time.split(' ')
+                     timeparts = time.time.split(' ')
 
-                     times.push ({ dow: timeparts[0],
+                     times.push ({ loc: time.loc,
+                                   dow: timeparts[0],
                                    starthour: convert12hr(timeparts[1]),
                                    endhour: convert12hr(timeparts[3]) }) }
 
@@ -33,8 +34,10 @@ function promiseSchedule(classCodes, pfunc) {
 function getTimes(p, times=[]) { // returns something like ["MoWeFr 9:00AM - 9:50AM", "Th 8:30AM - 9:20AM"]
        if (times.length == 0) p.deleteUntil('class="InfoMeetings"');
        p.deleteUntil('</td><td>');
-       times.push(p.deleteUntil("</td><td>"));
+       let time = p.deleteUntil("</td><td>");
+	   let loc = p.deleteUntil("</td>")
        p.continueUntil("</table>")
+	   times.push({ time: time, loc: loc })
        if (p.getBuffer().includes('<strong>')) { p.reset(); return getTimes(p, times); }
        return times;
 }

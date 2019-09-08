@@ -1,0 +1,160 @@
+<div id="burrito">
+	<div id="time">time</div>
+	<div id="message">message</div>
+</div>
+
+<style>
+body { display: flex; justify-content: center; align-items: center; font-size: 2em }
+#burrito { width: 12em; padding: 2em }
+</style>
+
+<script src="jquery-3.4.1.min.js"></script>
+<script src="test.js"></script>
+
+<script>
+
+const dows = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+let curr_count = 0;
+let target = 1;
+
+//promiseClass('15450', c => readyup(c))
+
+let today = new Date()
+let curr_dow = dows[today.getDay()];
+let today_items = [];
+
+function readyup(c)
+{	
+	for (let time of c.times)
+		if (time.dow.includes(curr_dow)) {
+			time.starthrt = to_hrt(time.starthour)
+			time.endhrt = to_hrt(time.endhour)
+			today_items.push(time)
+		}
+	
+	curr_count++;
+	
+	if (curr_count == target) createClock();
+}
+
+function createClock ()
+{
+	today_items.sort((a, b) => a.starthrt - b.endhrt)
+	setInterval(update, 1000)
+}
+
+let time = document.querySelector('#time')
+let message = document.querySelector('#message')
+let burrito = document.querySelector('#burrito')
+
+const cWARNING = 'ffff6e'
+const cOK = '3ce85c'
+const cINPROGRESS = 'f5364f'
+
+function pad (myint) { return myint.toString().padStart(2, '0') }
+
+function update() {
+
+	today = new Date()
+
+	time.innerHTML = `${pad(today.getHours())}:${pad(today.getMinutes())}:${pad(today.getSeconds())}`
+	
+	let curr_hrt = today.getHours() + today.getMinutes()/60 + today.getSeconds()/60/60;
+	
+	let curr_item = null
+	for (let item of today_items)
+		if (item.starthrt <= curr_hrt && curr_hrt < item.endhrt) {
+			curr_item = item; break
+		}
+	
+	let next_item = null
+	for (let item of today_items)
+		if (item.starthrt > curr_hrt) {
+			next_item = item; break
+		}
+	
+	let last_item = null
+	for (let i=today_items.length-1; i>=0; i--)
+		if (today_items[i].endhrt < curr_hrt) {
+			last_item = today_items[i]; break
+		}
+	
+	let msg = '';
+	
+	if(curr_item != null) {
+		msg = `you get out in ${Math.round(60 * (curr_item.endhrt - curr_hrt))} minutes`
+		set_gradient (curr_hrt, curr_item.starthrt, curr_item.endhrt, cINPROGRESS, cOK)
+	}
+	
+	if(next_item != null) {
+		let until_hrt = next_item.starthrt - curr_hrt;
+		let hours = Math.floor(until_hrt)
+		let minutes = Math.round(60 * (until_hrt - hours))
+		msg += `\nyour next item is in ${hours? `${hours} hours and `:''}${minutes} minutes at ${next_item.loc}`
+		//burrito.style.backgroundColor = '#' + get_gradient(Math.min(1, (1 - until_hrt) / 1), cOK, cWARNING);
+		//console.log('#' + get_gradient(Math.min(1, (1 - until_hrt) / 1), cOK, cWARNING))
+		
+		if(curr_item == null && until_hrt < 0.25) {
+			set_gradient (curr_hrt, next_item.starthrt - 0.25, next_item.starthrt, cWARNING, cINPROGRESS)
+		}
+		
+	}
+	
+	if(msg === '')
+		msg = 'done for the day'
+	
+	message.innerHTML = msg.trim()
+}
+
+get_gradient(0.5, '000000', 'ffffff')
+
+function set_gradient(currhrt, starthrt, endhrt, starthex, endhex) {
+	let diff = endhrt - starthrt
+	let progress = endhrt - currhrt
+	burrito.style.backgroundColor = '#' + get_gradient(1 - ((endhrt - currhrt) / (endhrt - starthrt)), starthex, endhex)
+	console.log(burrito.style.backgroundColor)
+}
+
+function get_gradient(percent, start_hex, end_hex) {
+
+	let startvals = get_three_hex(start_hex)
+	let endvals = get_three_hex(end_hex)
+	
+	let gradient = '';
+	
+	for (i in startvals)
+		gradient += Math.round((startvals[i] + percent * (endvals[i] - startvals[i]))).toString(16)
+	
+	return gradient
+}
+
+function get_three_hex(hexstr) {
+	
+	return hexstr.split(/(?=(?:..)*$)/).map(num => parseInt('0x' + num))
+	
+}
+
+function to_hrt (str) { // takes 14:23
+	let parts = str.split (':')
+	let hour = parseInt(parts[0])
+	let minutes = parseInt(parts[1])
+	return hour + minutes/60
+}
+
+let url = new URL(window.location.href);
+let srcurl = url.searchParams.get("src");
+
+if (srcurl) { // sets ui values from text
+	fetch(srcurl).then((response) => response.text()).then(
+	text => {
+		let classcodes = text.split('\n');
+		target = classcodes.length
+		for (let code of classcodes)
+			promiseClass(code, c => readyup(c))
+	})
+}
+
+let date = new Date()
+document.querySelector("#time").innerHTML = `${date.getHours()}:${date.getMinutes()}`
+</script>
