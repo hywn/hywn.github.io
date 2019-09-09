@@ -12,6 +12,7 @@
 		<tr><td></td><td><input type="button" value="add classes" onclick="addClasses();" /></td></tr>
 		<tr><td>elementary arabic ofzo</td><td><input class="class" id="10038" type="checkbox" onchange="gen();">10038</input></td></tr>
 	</table>
+	<textarea placeholder="some output will appear here" id="output"></textarea>
 </div>
 
 <style>
@@ -27,7 +28,7 @@ body { display: flex;
 #scheduleBox { display: inline-block }
 
 #geninfo { width:400px }
-#classesToAdd { width: 100%; height: 25em }
+textarea { width: 100%; height: 12em; resize: none }
 #geninfo table { margin: auto }
 #geninfo td { padding: 0.2em }
 #geninfo td:first-child { text-align: right }
@@ -46,7 +47,7 @@ const help = { 't': true, 'f': false }
 function add_class_to_url (ccode, selected) {
 	params.set(ccode, selected)
 	//window.location.href = window.location.href.split('?')[0] + '?' + params.toString() // I wonder if there is a better way to do this
-	console.log(params.toString())
+	//console.log(params.toString())
 } 
 
 for (a of params) {
@@ -84,7 +85,10 @@ function gen(){
 		if (elem.checked) classes.push(elem.id)
 	}
 	console.log(classes);
-	promiseSchedule(classes, sched => s.drawSchedule(sched));
+	promiseSchedule(classes, sched => {
+		s.drawSchedule(sched)
+		document.querySelector('#output').value = sched
+	});
 }
 
 </script>
