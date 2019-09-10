@@ -1,31 +1,60 @@
+const default_settings = {
+	padding: 20,
+	marginX: 50,
+	marginY: 50,
+	startHour: 8,
+	endHour: 18,
+	blockWidth: 100,
+	blockHeight: 60,
+	foreground: '#000',
+	background: '#fff',
+	textground: '#000',
+	font: '12px Arial',
+	guideOpacity: 0.1,
+	lineHeight: 14,
+	textPadding: 4,
+	shortDays: 'mo,tu,we,th,fr',
+	longDays: 'Mon,Tue,Wed,Thu,Fri'
+}
+
 class ScheduleCanvas
-     { constructor(canvasID, { startHour=8, endHour=18,
-                               blockWidth=100, blockHeight=60,
-                               marginX=50, marginY=50,
-                               background='#fff', foreground='#000',
-                               guideOpacity=0.2, lineHeight=14, textPadding=5, font='12px Arial',
-                               shortDays=['mo', 'tu', 'we', 'th', 'fr'], longDays=['Mon', 'Tue', 'Wed', 'Thu', 'Fri']}={})
-            {
-                   { this.startHour = startHour; this.endHour = endHour; this.blockWidth = blockWidth; this.blockHeight = blockHeight;
-                     this.marginX = marginX; this.marginY = marginY; this.background = background; this.foreground = foreground;
-                     this.guideOpacity = guideOpacity; this.lineHeight = lineHeight; this.textPadding = textPadding;
-                     this.font = font; this.shortDays = shortDays; this.longDays = longDays }
+{
+	constructor(canvasID, new_settings=default_settings)
+	{
+		let settings = default_settings
+		
+		for (let [k, v] of Object.entries(new_settings)) // there is probably a cleaner way to do this
+			Reflect.set(settings, k, v)
+		
+		settings.longDays = settings.longDays.split(',')
+		settings.shortDays = settings.shortDays.split(',')
+		
+		for (let [k, v] of Object.entries(settings))
+			Reflect.set(this, k, v)
 
-              this.canvas = document.getElementById(canvasID)
-              this.canvas.width = marginX + longDays.length*blockWidth
-              this.canvas.height = marginY + (endHour - startHour + 1) * blockHeight
+		this.canvas = document.getElementById(canvasID)
+		this.c = this.canvas.getContext('2d')
+		
+		let can = this.canvas;
+		let c = this.c;
+		
+		can.width = this.marginX + this.padding*2 + this.longDays.length*this.blockWidth
+		can.height = this.marginY + this.padding*2 + (this.endHour - this.startHour + 1) * this.blockHeight
 
-              this.c = this.canvas.getContext('2d')
-              this.c.globalAlpha = 1
-              this.c.font = font
-              this.c.strokeStyle = foreground
-              this.c.textAlign = 'center'
-              this.c.textBaseline = 'middle'
+		c.globalAlpha = 1
+		c.font = this.font
+		c.strokeStyle = this.foreground
+		c.textAlign = 'center'
+		c.textBaseline = 'middle'
 
-              this.clear() }
+		this.clear()
+	}
 
-       clear()
-            { this.c.clearRect(0, 0, this.canvas.width, this.canvas.height) }
+	clear()
+	{
+		this.c.fillStyle = this.background
+		this.c.fillRect(0, 0, this.canvas.width, this.canvas.height)
+	}
 
        drawSchedule(text)
             { window.requestAnimationFrame(() => this.drawScheduleCallback(text)) }
@@ -46,11 +75,15 @@ class ScheduleCanvas
                                                             this.blockWidth,
                                                             (block[2] - block[1])*this.blockHeight) } }
 
-       drawTextRect(text, x, y, width, height)
-            { this.c.clearRect(x, y, width, height)
-              this.c.strokeRect(x, y, width, height)
-
-              this.drawText(this.wrapText(text, width - this.textPadding*2 ), x + width/2, y + height/2) }
+	drawTextRect(text, x, y, width, height, background=this.background, foreground=this.foreground, textground=this.textground)
+	{
+		this.c.strokeStyle = foreground
+		this.c.fillStyle = background
+		this.c.fillRect(x + this.padding, y + this.padding, width, height)
+		this.c.strokeRect(x + this.padding, y + this.padding, width, height)
+		this.c.fillStyle = textground;
+		this.drawText(this.wrapText(text, width - this.textPadding*2), x + width/2, y + height/2)
+	}
 
        wrapText(text, targetWidth)
             { let burrito
@@ -73,7 +106,7 @@ class ScheduleCanvas
             { let lines = text.split('\n')
               centerY -= Math.floor(lines.length/2 + 1) * this.lineHeight + (lines.length%2 - 1) * this.lineHeight/2
               for (let line of lines)
-                     this.c.fillText(line, centerX, centerY += this.lineHeight) }
+                     this.c.fillText(line, centerX + this.padding, this.padding + (centerY += this.lineHeight)) }
 
        drawTimes()
             { for (let hour=this.startHour; hour<=this.endHour; hour++)
@@ -86,7 +119,7 @@ class ScheduleCanvas
        drawLines()
             { for (let hour=this.startHour+1; hour<=this.endHour; hour++)
                  { this.c.globalAlpha = this.guideOpacity
-                   this.c.strokeRect(this.marginX, this.marginY + (hour - this.startHour)*this.blockHeight, this.canvas.width - this.marginY, 0)
+                   this.c.strokeRect(this.marginX + this.padding, this.marginY + this.padding + (hour - this.startHour)*this.blockHeight, this.canvas.width - this.marginY - this.padding*2, 0)
                    this.c.globalAlpha = 1 } } }
 
 /* parsing */
