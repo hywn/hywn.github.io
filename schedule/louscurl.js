@@ -20,6 +20,7 @@ function promiseSchedule(classCodes, pfunc)
 {
 	let schedule = []
 	let curr = 0, goal = classCodes.length
+	if (goal == 0) { pfunc(""); return }
 	for (let classCode of classCodes) {
 		promiseClass(classCode, classes => {
 			schedule = schedule.concat(classes)
