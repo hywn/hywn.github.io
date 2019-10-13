@@ -28,10 +28,11 @@ function parseSchedule(text)
 
 function getTextSchedule(schedule)
 {
+	console.log(schedule)
 	let append = ''
-	for (cls of schedule)
-		for (tal of cls.tals)
-			append += `${tal.dows.join('')}\n${to24Hour(tal.start)}-${to24Hour(tal.end)} ${cls.title} at ${cls.loc}\n\n`
+	for (tal of schedule)
+		append += `${tal.dows.map(i => days[i]).join('')}\n${to24Hour(tal.start)}-${to24Hour(tal.end)} ${tal.title} at ${tal.loc}\n\n`
+	return append
 }
 
 function to24Hour(hrt)
