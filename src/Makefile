@@ -1,10 +1,13 @@
-targets := $(patsubst %.prrr, ../%.html, $(wildcard *.prrr))
+SHELL   := /bin/bash
+
+targets := $(patsubst %.md, ../%.html, $(wildcard *.md))
 
 all:
 	make $(targets)
 
 clean:
-	rm $(targets)
+	rm -rf $(targets)
 
-../%.html: %.prrr
-	prrr $< > ../$*.html
+../%.html: %.md
+	echo '<link rel="stylesheet" href="src/list.css" />' > ../$*.html
+	ruby list.rb $< >> ../$*.html

@@ -1,0 +1,9 @@
+- # James Huang
+	- hobby programmer & student
+	- [[GitHub](https://github.com/hywn)]
+	- [[resume](https://hywn.github.io/resume/)]
+- # project websites
+	- [[han](https://hywn.github.io/han/)]
+		- explore shared Korean & Japanese vocabulary!
+	- [[sche](https://hywn.github.io/sche/)]
+		- generate a block schedule with a tiny markup language!
