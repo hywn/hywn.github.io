@@ -2,6 +2,7 @@
 	- hobby programmer & student
 	- [[GitHub](https://github.com/hywn)]
 	- [[resume](https://hywn.github.io/resume/)]
+	- [[projects](https://hywn.github.io/rs/)]
 - # project websites
 	- [[han](https://hywn.github.io/han/)]
 		- explore shared Korean & Japanese vocabulary!
