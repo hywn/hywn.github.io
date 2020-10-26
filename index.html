@@ -1,2 +1,45 @@
-<link rel="stylesheet" href="src/list.css" />
-<ul><li><h1>James Huang</h1><ul><li>hobby programmer & student<br /></li><li>[<a href="https://github.com/hywn">GitHub</a>]<br /></li><li>[<a href="https://hywn.github.io/resume/">resume</a>]<br /></li><li>[<a href="https://hywn.github.io/rs/">projects</a>]</li></ul></li><li><h1>project websites</h1><ul><li>[<a href="https://hywn.github.io/han/">han</a>]<ul><li>explore shared Korean & Japanese vocabulary!</li></ul></li><li>[<a href="https://hywn.github.io/sche/">sche</a>]<ul><li>generate a block schedule with a tiny markup language!</li></ul></li></ul></li></ul>
+<style>
+html
+	{ display: flex
+	; justify-content: center
+	}
+body
+	{ display: grid
+	; grid-template-columns: 8em 8em
+	; grid-template-rows:    8em 8em
+	; width: min-content
+	; height: min-content
+	; margin: 4em
+	; line-height: 1.6
+	}
+#intro
+	{ display: flex
+	; align-items: center
+	; grid-column-end: span 2
+	}
+#links, #sites
+	{ display: flex
+	; align-items: flex-start
+	; flex-direction: column
+	}
+h1, h3 { margin: 0 }
+h1 { font-size: 2.8em }
+h3 { font-size: 1.2em }
+</style>
+
+<div id=intro>
+<h1>James</h1>
+</div>
+
+<div id=links>
+<h3>links</h3>
+<a href=https://hywn.github.io/rs/>projects</a>
+<a href=https://github.com/hywn>github</a>
+<a href=https://hywn.github.io/resume/>resume</a>
+</div>
+
+<div id=sites>
+<h3>project sites</h3>
+<a href=https://hywn.github.io/han/>han</a>
+<a href=https://hywn.github.io/sche/>sche</a>
+</div>
