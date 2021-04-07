@@ -1,45 +1,42 @@
+<meta charset='UTF-8'>
+
 <style>
 html
 	{ display: flex
 	; justify-content: center
 	}
 body
-	{ display: grid
-	; grid-template-columns: 8em 8em
-	; grid-template-rows:    8em 8em
+	{ margin: 4em
 	; width: min-content
 	; height: min-content
-	; margin: 4em
-	; line-height: 1.6
+	; display: grid
+	; grid-gap: 2em
+	; justify-items: center
 	}
-#intro
-	{ display: flex
-	; align-items: center
-	; grid-column-end: span 2
+pre
+	{ font-size: 1.6em
+	; border: 1px solid
+	; padding: 2em
 	}
-#links, #sites
-	{ display: flex
-	; align-items: flex-start
-	; flex-direction: column
+#header
+	{ font-size: 200%
+	; box-shadow: 0.5em 0.5em black
 	}
-h1, h3 { margin: 0 }
-h1 { font-size: 2.8em }
-h3 { font-size: 1.2em }
 </style>
 
-<div id=intro>
-<h1>James</h1>
-</div>
+<pre id=header>
+| James / <a href='https://github.com/hywn'>hywn</a>
++--------------+
+| <a href='https://hywn.github.io/rs/'>projects</a>
+| <a href='https://hywn.github.io/resume-sellout/'>resume</a>
+| <a href='https://github.com/hywn'>github</a>
+|
+</pre>
 
-<div id=links>
-<h3>links</h3>
-<a href=https://hywn.github.io/rs/>projects</a>
-<a href=https://github.com/hywn>github</a>
-<a href=https://hywn.github.io/resume-sellout/>resume</a>
-</div>
-
-<div id=sites>
-<h3>project sites</h3>
-<a href=https://hywn.github.io/han/>han</a>
-<a href=https://hywn.github.io/sche/>sche</a>
-</div>
+<pre id=links>
+Quick Links
+  sche/<a href='https://hywn.github.io/sche/uva'>uva</a>  (uva schedule tool)
+  zoop/<a href='https://hywn.github.io/zoop/?surl=https://raw.githubusercontent.com/hywn/zoop/main/examples/jsonpp.js'>json</a> (json pretty print)
+  zoop/<a href='https://hywn.github.io/zoop/?surl=https://raw.githubusercontent.com/hywn/zoop/main/examples/urlpp.js'>url</a>  (url pretty print)
+  han/<a href='https://hywn.github.io/han/1800/'>1800</a>  (교육용 한자 목록)
+</pre>
