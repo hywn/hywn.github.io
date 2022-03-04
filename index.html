@@ -12,12 +12,21 @@ body
 pre
 	{ font-size: 1rem
 	; border: 1px solid
-	; padding: 3rem
+	; margin: 0
 	}
 #header
 	{ font-size: 1.6rem
 	; box-shadow: 1rem 1rem black
+	; padding: 3rem
 	}
+#links { padding: 2rem }
+@media (max-width: 500px) {
+	body
+		{ margin: 1.2rem auto 1.2 auto
+		; gap: 1rem
+		}
+	#header { box-shadow: none }
+}
 </style>
 
 <pre id=header>
